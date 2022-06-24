@@ -1,23 +1,23 @@
 package analisadorLexico;
 
 public class Token {
-	public static final int TK_NUMBER 		= 0;
-	public static final int TK_LITERAL		= 1;
-	public static final int TK_IDENTIFIER 	= 2;
-	public static final int TK_COMENTARIO	= 3;
-	public static final int TK_OPERATOR 	= 4;
-	public static final int TK_ERRO			= 5;
-	public static final int TK_RCB			= 6;
-	public static final int TK_OPRMATEMATICO= 7;
-	public static final int TK_AB_P			= 8;
-	public static final int TK_FC_P			= 9;
-	public static final int TK_PT_V			= 10;
-	public static final int TK_VIR			= 11;	
+	public static final String TK_NUMBER 		= "NUM";
+	public static final String TK_LITERAL		= "LIT";
+	public static final String TK_IDENTIFIER 	= "ID";
+	public static final String TK_COMENTARIO	= "COMENTARIO";
+	public static final String TK_OPERATOR 		= "OPR";
+	public static final String TK_ERRO			= "0";
+	public static final String TK_RCB			= "RCB";
+	public static final String TK_OPRMATEMATICO	= "OPM";
+	public static final String TK_AB_P			= "AB_P";
+	public static final String TK_FC_P			= "FC_P";
+	public static final String TK_PT_V			= "PT_V";
+	public static final String TK_VIR			= "VIR";	
 	
-	private int 	type;
+	private String 	type;
 	private String 	text;
 	
-	public Token(int type, String text) {
+	public Token(String type, String text) {
 		super();
 		this.type = type;
 		this.text = text;
@@ -28,11 +28,11 @@ public class Token {
 	}
 	
 
-	public int getType() {
+	public String getType() {
 		return type;
 	}
 	
-	public void setType(int type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -46,7 +46,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [type=" + type + ", text=" + text + "]";
+		return "Classe:" + type + ", Lexema:" + text;
 	}
 	
 	

@@ -8,7 +8,7 @@ public class mainScanner {
 		 	OPM 		-> + | - | * | /
 		 	
 		 */
-		OScanner sc = new OScanner("/home/paulo/eclipse-workspace/analisadorLexico/src/analisadorLexico/fonte.alg");
+		OScanner sc = new OScanner("/home/paulo/Documents/AnaliseLexica/analisadorLexico/src/analisadorLexico/fonte.alg");
 		Token token = null;
 		do {
 			token = sc.nextToken();
