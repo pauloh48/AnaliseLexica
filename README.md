@@ -1,7 +1,7 @@
 # AnaliseLexica
 
 ## ARQUIVOS
-1. [**fonte.alg*]([https://github.com/pauloh48/AnaliseLexica/blob/main/analisadorLexico/src/analisadorLexico/mainScanner.java](https://github.com/pauloh48/AnaliseLexica/blob/main/analisadorLexico/src/analisadorLexico/fonte.alg)): arquivo fonte de teste, usado para ver o funcionamento do Scanner;
+1. [**fonte.alg*](https://github.com/pauloh48/AnaliseLexica/blob/main/analisadorLexico/src/analisadorLexico/fonte.alg): arquivo fonte de teste, usado para ver o funcionamento do Scanner;
 2. [**mainScanner.java**](https://github.com/pauloh48/AnaliseLexica/blob/main/analisadorLexico/src/analisadorLexico/mainScanner.java): arquivo main, usa a função Scanner, favor alterar o caminho em que está o fonte, linha 11;
 3. [**Token.java**](https://github.com/pauloh48/AnaliseLexica/blob/main/analisadorLexico/src/analisadorLexico/Token.java): Identifica o tipo de token e imprime na tela;
 4. [**OScanner.java**](https://github.com/pauloh48/AnaliseLexica/blob/main/analisadorLexico/src/analisadorLexico/OScanner.java): Programa principal, implementa o dfa com seguintes estados iniciais de transição:
