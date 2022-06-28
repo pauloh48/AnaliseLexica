@@ -12,58 +12,14 @@ public class OScanner {
 	private int 	estado;
 	private int		pos;
 	
-	public String estado_00(int estado, char currentChar) {
-		String strCharEstado = "";
-		int flag = 0; // indica estado validos de transiçã para concatenar termo
-		// NUM ******************************
-		if(isDigit(currentChar)) {
-			estado = 1;
-		}
-		// LITERAL
-		else if(isQuote(currentChar)) {
-			estado = 6;
-		// ID
-		}else if(isChar(currentChar)) {
-			estado = 8;
-		// COMENTARIO
-		}else if(isAbreColchete(currentChar)) {
-			estado = 9;
-		// OPR >
-		}else if(isOPRMaior(currentChar)) {
-			estado = 12;
-		// OPR e RCB
-		}else if(isOPRMenor(currentChar)) {
-			estado = 15;
-		}
-		// OPRMATEMATICO
-		else if (isOPRMatematico(currentChar)) {
-			estado = 18;
-		}
-		// AB_P
-		else if (isAB_P(currentChar)) {
-			estado = 19;
-		}
-		// FC_P
-		else if (isFC_P(currentChar)) {
-			estado = 20;
-		}
-		// PT_V
-		else if (isFC_P(currentChar)) {
-			estado = 21;
-		}
-		// VIR
-		else if (isFC_P(currentChar)) {
-			estado = 22;
-		}
-		if(estado != 0) {
-			flag = 1;
-		}
-		
-		strCharEstado = currentChar + "#" + estado + "#" + flag;
-		
-		return strCharEstado;
+	public int getPos() {
+		return pos;
 	}
-	
+
+	public void setPos(int pos) {
+		this.pos = pos;
+	}
+
 	//automato 
 	public Token nextToken(String contenLine) {
 		char currentChar;

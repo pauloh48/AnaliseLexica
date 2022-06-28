@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 public class mainScanner {
 
 	public static void main(String[] args) throws IOException {
+		// palavras reservadas -> tabelahash
 		String filename = "/home/paulo/Documents/AnaliseLexica/analisadorLexico/src/analisadorLexico/fonte.alg";
 		BufferedReader conteudoAtualLine = new BufferedReader(new FileReader(filename));
 		
@@ -23,16 +24,16 @@ public class mainScanner {
 
 		while ((line = conteudoAtualLine.readLine()) != null) {
 			size = line.length();
-			while(c <= line.length()) {
+			while(c < line.length()) {
 				token = sc.nextToken(line);
 				c = token.getColunaAtual();
 				if(token != null) {
 					System.out.println(token);
 				}
 			}
+			sc.setPos(0); //volta pos coluna para inicio, 0
 			l++;
 			c = 0;
-			System.out.println(l);
 		}while(token != null);
 
 	}

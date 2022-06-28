@@ -40,8 +40,6 @@ public class Token {
 	public Token() {
 		super();
 	}
-	
-	
 
 	public int getColunaAtual() {
 		return colunaAtual;
@@ -71,7 +69,4 @@ public class Token {
 	public String toString() {
 		return "Classe: " + type + ", Lexema: " + text + ", tipo: " + typeLexema(type, text);
 	}
-	
-	
-	
 }
