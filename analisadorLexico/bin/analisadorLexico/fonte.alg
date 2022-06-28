@@ -1,2 +1,4 @@
-123 se aux @ x 1
+1 a
+a
+b
 fimse

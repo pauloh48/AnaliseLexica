@@ -12,33 +12,71 @@ public class OScanner {
 	private int 	estado;
 	private int		pos;
 	
-	public OScanner(String filename) {
-		try {
-			//le arquivo como um unico vetor
-			String txtConteudo;
-			txtConteudo = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
-			
-			content = txtConteudo.toCharArray();
-			pos = 0;
-			
-		}catch (Exception e) {
-			e.printStackTrace();
+	public String estado_00(int estado, char currentChar) {
+		String strCharEstado = "";
+		int flag = 0; // indica estado validos de transiçã para concatenar termo
+		// NUM ******************************
+		if(isDigit(currentChar)) {
+			estado = 1;
 		}
+		// LITERAL
+		else if(isQuote(currentChar)) {
+			estado = 6;
+		// ID
+		}else if(isChar(currentChar)) {
+			estado = 8;
+		// COMENTARIO
+		}else if(isAbreColchete(currentChar)) {
+			estado = 9;
+		// OPR >
+		}else if(isOPRMaior(currentChar)) {
+			estado = 12;
+		// OPR e RCB
+		}else if(isOPRMenor(currentChar)) {
+			estado = 15;
+		}
+		// OPRMATEMATICO
+		else if (isOPRMatematico(currentChar)) {
+			estado = 18;
+		}
+		// AB_P
+		else if (isAB_P(currentChar)) {
+			estado = 19;
+		}
+		// FC_P
+		else if (isFC_P(currentChar)) {
+			estado = 20;
+		}
+		// PT_V
+		else if (isFC_P(currentChar)) {
+			estado = 21;
+		}
+		// VIR
+		else if (isFC_P(currentChar)) {
+			estado = 22;
+		}
+		if(estado != 0) {
+			flag = 1;
+		}
+		
+		strCharEstado = currentChar + "#" + estado + "#" + flag;
+		
+		return strCharEstado;
 	}
 	
 	//automato 
-	public Token nextToken() {
+	public Token nextToken(String contenLine) {
 		char currentChar;
+		content = contenLine.toCharArray();
 		Token token;
 		String term = "";
 		if(isEOF()) {
 			return null;
 		}
 		estado = 0;
-		while(true) {
+
+		while(true) {	
 			currentChar = nextchar();
-			//term += currentChar;
-			
 			switch(estado) {
 			case 0:
 				// NUM ******************************
@@ -108,7 +146,7 @@ public class OScanner {
 				}else if(isSpace(currentChar)) {
 					//term += currentChar; ignora espco
 					estado = 5;
-					back();
+					//back();
 				}
 				break;
 			case 3:
@@ -134,7 +172,9 @@ public class OScanner {
 				token = new Token();
 				token.setType(token.TK_NUMBER);
 				token.setText(term);
+				token.setColunaAtual(pos);
 				back();
+				//token.setColunaAtual(pos);
 				return token;
 		// NUM ******************************
 		// LITERAL ******************
@@ -167,7 +207,9 @@ public class OScanner {
 					token = new Token();
 					token.setType(token.TK_IDENTIFIER);
 					token.setText(term);
+					token.setColunaAtual(pos);
 					back();
+					//token.setColunaAtual(pos);
 					return token;
 				}
 				break;
@@ -295,11 +337,13 @@ public class OScanner {
 		String cAux = Character.toString(c);
 		return symbols.contains(cAux);
 	}
+	
 	private boolean isOtherSymbolsQuote(char c) { //remove }
 		String symbols = ",;:.!?\\*+-/(){[]+<>='\"";
 		String cAux = Character.toString(c);
 		return symbols.contains(cAux);
 	}
+	
 	private boolean isUnderline(char c) {
 		return c == '_';
 	}
@@ -347,13 +391,20 @@ public class OScanner {
 		return c == ' ' || c == '\t' || c == '\n' || c == '\r'; 
 	}
 	private boolean isEOF() {
-		return pos == content.length;
+		return pos >= content.length;
 	}
 	
 	private char nextchar() {
+		if (isEOF()) {
+			return '\0';
+		}
 		return content[pos++];
 	}
 	private void back() {
 		pos--;
 	}
+	
+	/*private boolean isEOF(char c) {
+    	return c == '\0';
+    }*/
 }
