@@ -11,6 +11,8 @@ public class OScanner {
 	private char[] 	content;
 	private int 	estado;
 	private int		pos;
+	private int 	colErro = 0;
+	private int		contaColErro = 0;
 	
 	public int getPos() {
 		return pos;
@@ -77,15 +79,31 @@ public class OScanner {
 					estado = 20;
 				}
 				// PT_V
-				else if (isFC_P(currentChar)) {
+				else if (isPT_V(currentChar)) {
 					term += currentChar;
 					estado = 21;
 				}
 				// VIR
-				else if (isFC_P(currentChar)) {
+				else if (isVIR(currentChar)) {
 					term += currentChar;
 					estado = 22;
 				}
+				// ESPAÇO
+				else if (isSpace(currentChar)) {
+					estado = 0;
+				}
+				//EOF
+				else if(isEOF()) {
+					estado = 26;
+				}
+				
+				//ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
+				}
+				
+				
 				break;
 		// NUM ******************************
 			case 1:
@@ -99,10 +117,15 @@ public class OScanner {
 				}else if(isE_e(currentChar)) {
 					term += currentChar;
 					estado = 4;
-				}else if(isSpace(currentChar)) {
+				}else if(isSpace(currentChar) || isEOF()) {
 					//term += currentChar; ignora espco
 					estado = 5;
 					//back();
+				}
+				//ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
 				}
 				break;
 			case 3:
@@ -114,14 +137,24 @@ public class OScanner {
 					//term += currentChar; ignora espco
 					estado = 5;
 				}
-				else {
+				/*else {
 					throw new RuntimeException("palavra invalida");
+				}*/
+				//ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
 				}
 				break;
 			case 4:
 				if(ispositivo_negativo(currentChar)) {
 					term += currentChar;
 					estado = 3;
+				}
+				//ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
 				}
 				break;
 			case 5:
@@ -143,8 +176,13 @@ public class OScanner {
 					term += currentChar;
 					estado = 7;
 				}
-				else {
+				/*else {
 					System.out.println("incompleto");
+				}*/
+				//ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
 				}
 				break;
 			case 7:
@@ -159,7 +197,13 @@ public class OScanner {
 				if(isChar(currentChar) || isDigit(currentChar) || isUnderline(currentChar)) {
 					term += currentChar;
 					estado = 8;
-				}else {
+				}
+				//ERRO
+				else if(!isChar(currentChar) && !isDigit(currentChar) && !isUnderline(currentChar) && !isSpace(currentChar) && !isEOF() && !isVIR(currentChar) && !isPT_V(currentChar)) {
+					term+= currentChar;
+					estado = 23;
+				}
+				else {
 					token = new Token();
 					token.setType(token.TK_IDENTIFIER);
 					token.setText(term);
@@ -180,8 +224,13 @@ public class OScanner {
 					term += currentChar;
 					estado = 10;
 				}
-				else {
+				/*else {
 					System.out.println("incompleto");
+				}*/
+				//ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
 				}
 				break;
 			case 10:
@@ -197,8 +246,13 @@ public class OScanner {
 					term += currentChar;
 					estado = 13;
 				}
-				else {
+				/*else {
 					System.out.println("Invalido");
+				}*/
+				//ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
 				}
 				break;
 			case 13:
@@ -221,8 +275,12 @@ public class OScanner {
 				}else if(isRCBTraco(currentChar)) {
 					term += currentChar;
 					estado = 17;
-				}else {
+				}/*else {
 					System.out.println("Invalido");
+				}*///ERRO
+				else {
+					term+= currentChar;
+					estado = 23;
 				}
 				break;
 			// RCB
@@ -265,8 +323,55 @@ public class OScanner {
 				token = new Token();
 				token.setType(token.TK_VIR);
 				token.setText(term);
+				//back();
+				return token;
+				
+			// ERRO
+			case 23:
+				//colErro = pos-contaColErro;
+				contaColErro++;
+				//token.setColunaAtual(pos);
+				if(isSpace(currentChar)) {
+					term += currentChar;
+					estado = 24;
+				}
+				else if(isEOF()) {
+					term += currentChar;
+					estado = 25;
+				}
+				else if(isVIR(currentChar) || isPT_V(currentChar)) {
+					estado = 24;
+				}
+				else {
+					term += currentChar;
+					estado = 23;
+				}
+				break;
+			
+			case 24:
+				colErro = pos-contaColErro-1; //-1 pois a posicao sempre +1
+
+				token = new Token();
+				token.setType(token.TK_ERRO);
+				token.setText(term);
+				token.setColunaAtual(colErro);
 				back();
 				return token;
+				
+			case 25:
+				token = new Token();
+				token.setType(token.TK_ERRO);
+				token.setText(term);
+				//back();
+				return token;
+			
+			case 26:
+				token = new Token();
+				token.setType(token.TK_EOF);
+				token.setText(term);
+				//back();
+				return token;
+			
 			}
 		}
 	}
