@@ -3,16 +3,12 @@ package analisadorLexico;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 public class mainScanner {
 
 	public static void main(String[] args) throws IOException {
-		// palavras reservadas -> tabelahash
+		// palavras reservadas -> hash map
 		HashMap<String, String> hm = new HashMap<String, String>();
 		hm.put("inicio","inicio");
 		hm.put("varinicio","varinicio");
@@ -37,44 +33,53 @@ public class mainScanner {
 		
 		int l = 1;
 		int c = 0;
-		int size = 0;
+		//int size = 0;
 		String tipo_tabela;
 		OScanner sc = new OScanner();
 
 		while ((line = conteudoAtualLine.readLine()) != null) {
-			size = line.length();
+			//size = line.length();
 			while(c < line.length()) {
 				token = sc.nextToken(line);
+				if(token == null) 
+					break;
+				
 				c = token.getColunaAtual();
+				
 				if(token != null) {
-					if(token.getType().equals("ID")) {
+					if(token.getClasse().equals("ID")) {
+						
 						/*Verificar na hash table se é uma palavra reservada ou se já está preenchido na hash table*/
 						/*Se não estiver preenchido, inserir e retornar com o tipo = Nulo */
-						tipo_tabela = hm.get(token.getText());
+						tipo_tabela = hm.get(token.getLexema());
+						
 						if(tipo_tabela == null) {
-							hm.put(token.getText(), "ID");
+							hm.put(token.getLexema(), "ID");
+							tipo_tabela = "Nulo";
 						}
 						else {
-							tipo_tabela = hm.get(token.getText());
-							token.setText(tipo_tabela);
-							token.setType(token.getText());
-							token.setTipo(tipo_tabela);
+							//verifica se é palavra reservada ou ID
+							if(hm.get(token.getLexema()) == "ID") {
+								tipo_tabela = "Nulo";
+							}
+							else {
+								tipo_tabela = hm.get(token.getLexema());
+							}
 						}
-						if(tipo_tabela == null) tipo_tabela = "Nulo";
-						System.out.println("Classe: " + hm.get(token.getText()) + ", Lexema: " + token.getText() + ", tipo: " + tipo_tabela);
+						System.out.println("Classe: " + hm.get(token.getLexema()) + ", Lexema: " + token.getLexema() + ", tipo: " + tipo_tabela);
 					}
 					else System.out.println(token);
-					if(token.getType().equals("ERRO")) 
+					if(token.getClasse().equals("ERRO")) 
 						System.out.println("\tERRO lexico – Caractere invalido na\n"
 								+ "\tlinguagem. Linha " + l + ", coluna " + c + ".");
 				}
-				//System.out.println(hm);
 			}
 			sc.setPos(0); //volta pos coluna para inicio, 0
 			l++;
 			c = 0;
 		}
-		System.out.println("Classe: EOF, Lexema: EOF, Tipo:Nulo ");
+		System.out.println("Classe: EOF, Lexema: EOF, Tipo: Nulo");
+		//System.out.println(hm);
 		
 		conteudoAtualLine.close();
 	}

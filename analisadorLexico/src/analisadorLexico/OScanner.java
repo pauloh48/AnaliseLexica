@@ -1,18 +1,10 @@
 package analisadorLexico;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import javax.management.RuntimeErrorException;
-
 public class OScanner {
 	private char[] 	content;
 	private int 	estado;
 	private int		pos;
-	private int 	colErro = 0;
-	private int		contaColErro = 0;
+	private int 	posErro = 0;
 	
 	public int getPos() {
 		return pos;
@@ -25,7 +17,13 @@ public class OScanner {
 	//automato 
 	public Token nextToken(String contenLine) {
 		char currentChar;
+		char temp = 0;
+		//
+		//int tamanho = contenLine.length();
+		
+		//
 		content = contenLine.toCharArray();
+		//int tma = content.length;
 		Token token;
 		String term = "";
 		if(isEOF()) {
@@ -54,6 +52,10 @@ public class OScanner {
 				}else if(isAbreColchete(currentChar)) {
 					term += currentChar;
 					estado = 9;
+				//OPR =
+				}else if(isOPRIgual(currentChar)) {
+					term += currentChar;
+					estado = 13;
 				// OPR >
 				}else if(isOPRMaior(currentChar)) {
 					term += currentChar;
@@ -93,17 +95,16 @@ public class OScanner {
 					estado = 0;
 				}
 				//EOF
-				else if(isEOF()) {
+				else if(isEOF() && currentChar == '\0') {
 					estado = 26;
+					return null;
 				}
-				
 				//ERRO
 				else {
 					term+= currentChar;
-					estado = 23;
+					posErro = pos;
+					estado = 28;
 				}
-				
-				
 				break;
 		// NUM ******************************
 			case 1:
@@ -117,15 +118,22 @@ public class OScanner {
 				}else if(isE_e(currentChar)) {
 					term += currentChar;
 					estado = 4;
-				}else if(isSpace(currentChar) || isEOF()) {
-					//term += currentChar; ignora espco
+				}else if(isSpace(currentChar)) {
+					//ignora espaco
 					estado = 5;
-					//back();
+				}
+				else if(isVIR(currentChar) || isPT_V(currentChar) || isFC_P(currentChar)) {
+					back();
+					estado = 5;
+				}
+				else if(currentChar == '\0') {
+					estado = 5;
 				}
 				//ERRO
 				else {
-					term+= currentChar;
-					estado = 23;
+					temp+= currentChar;
+					estado = 29;
+					posErro = pos;
 				}
 				break;
 			case 3:
@@ -134,20 +142,29 @@ public class OScanner {
 					estado = 3;
 				}
 				else if(isSpace(currentChar)) {
-					//term += currentChar; ignora espco
+					//ignora espaco
 					estado = 5;
 				}
-				/*else {
-					throw new RuntimeException("palavra invalida");
-				}*/
+				else if(isVIR(currentChar) || isPT_V(currentChar) || isFC_P(currentChar)) {
+					back();
+					estado = 5;
+				}
+				else if(currentChar == '\0') {
+					estado = 5;
+				}
 				//ERRO
 				else {
-					term+= currentChar;
-					estado = 23;
+					temp+= currentChar;
+					estado = 29;
+					posErro = pos;
 				}
 				break;
 			case 4:
 				if(ispositivo_negativo(currentChar)) {
+					term += currentChar;
+					estado = 3;
+				}
+				if(isDigit(currentChar)) {
 					term += currentChar;
 					estado = 3;
 				}
@@ -159,37 +176,33 @@ public class OScanner {
 				break;
 			case 5:
 				token = new Token();
-				token.setType(token.TK_NUMBER);
-				token.setText(term);
-				token.setColunaAtual(pos);
-				back();
-				//token.setColunaAtual(pos);
+				token.setClasse(Token.TK_NUMBER);
+				token.setLexema(term);
+				updatePosCol(currentChar, token);
 				return token;
+				
 		// NUM ******************************
 		// LITERAL ******************
 			case 6:
-				if(isDigit(currentChar) || isChar(currentChar) || isOtherSymbols(currentChar)) {
+				if(isQuote(currentChar)) {
+					term += currentChar;
+					estado = 7;
+				}else if(currentChar != '\0'){
 					term += currentChar;
 					estado = 6;
 				}
-				else if(isQuote(currentChar)) {
-					term += currentChar;
-					estado = 7;
-				}
-				/*else {
-					System.out.println("incompleto");
-				}*/
 				//ERRO
-				else {
+				if(currentChar == '\0'){
 					term+= currentChar;
-					estado = 23;
+					estado = 24;
+					posErro = pos;
 				}
 				break;
 			case 7:
 				token = new Token();
-				token.setType(token.TK_LITERAL);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_LITERAL);
+				token.setLexema(term);
+				updatePosCol(currentChar, token);
 				return token;
 		// LITERAL ******************
 		// ID
@@ -199,24 +212,44 @@ public class OScanner {
 					estado = 8;
 				}
 				//ERRO
-				else if(!isChar(currentChar) && !isDigit(currentChar) && !isUnderline(currentChar) && !isSpace(currentChar) && !isEOF() && !isVIR(currentChar) && !isPT_V(currentChar)) {
-					term+= currentChar;
+				else if(!isChar(currentChar) && !isDigit(currentChar) 
+						&& !isUnderline(currentChar) && !isSpace(currentChar) 
+						&& /*!isEOF() &&*/ !isVIR(currentChar) && !isPT_V(currentChar)
+						&& !isOPRMaior(currentChar) && !isOPRMenor(currentChar)
+						&& !isOPRIgual(currentChar) && !isRCBTraco(currentChar)
+						&& !isOPRMatematico(currentChar) && !isFC_P(currentChar)
+						&& !isAB_P(currentChar)	&& !isQuote(currentChar) && currentChar != '\0') {
+					//temporário para verificar se realmente é erro
+					temp = currentChar;
 					estado = 23;
+					posErro = pos;
 				}
 				else {
 					token = new Token();
-					token.setType(token.TK_IDENTIFIER);
-					token.setText(term);
-					token.setColunaAtual(pos);
-					back();
-					//token.setColunaAtual(pos);
+					token.setClasse(Token.TK_IDENTIFIER);
+					token.setLexema(term);
+					updatePosCol(currentChar, token);
 					return token;
 				}
 				break;
 		// ID
 		// COMENTARIO
 			case 9:
-				if(isDigit(currentChar) || isChar(currentChar) || isOtherSymbolsQuote(currentChar)) {
+				if(isFechaColchete(currentChar)) {
+					term += currentChar;
+					estado = 10;
+				}else if(currentChar != '\0'){
+					term += currentChar;
+					estado = 9;
+				}
+				if(currentChar == '\0'){
+					term+= currentChar;
+					estado = 24;
+					posErro = pos;
+				}
+				/*
+				//
+				if(isDigit(currentChar) || isChar(currentChar) || isOtherSymbolsNoCloseBracket(currentChar)) {
 					term += currentChar;
 					estado = 9;
 				}
@@ -224,20 +257,32 @@ public class OScanner {
 					term += currentChar;
 					estado = 10;
 				}
-				/*else {
-					System.out.println("incompleto");
-				}*/
 				//ERRO
 				else {
 					term+= currentChar;
 					estado = 23;
 				}
+				//
+				if(isQuote(currentChar)) {
+					term += currentChar;
+					estado = 7;
+				}else if(currentChar != '\0'){
+					term += currentChar;
+					estado = 6;
+				}
+				//ERRO
+				if(currentChar == '\0'){
+					term+= currentChar;
+					estado = 24;
+					posErro = pos;
+				}*/
 				break;
 			case 10:
 				token = new Token();
-				token.setType(token.TK_COMENTARIO);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_COMENTARIO);
+				token.setLexema(term);
+				//back();
+				updatePosCol(currentChar, token);
 				return token;
 		// COMENTARIO		
 		// OPR >= 
@@ -246,20 +291,21 @@ public class OScanner {
 					term += currentChar;
 					estado = 13;
 				}
-				/*else {
-					System.out.println("Invalido");
-				}*/
+				//
+				else
+					estado = 13;
 				//ERRO
-				else {
-					term+= currentChar;
-					estado = 23;
-				}
+				//else {
+					//estado = 13;
+					//pos--;
+				//}
 				break;
 			case 13:
 				token = new Token();
-				token.setType(token.TK_OPERATOR);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_OPERATOR);
+				token.setLexema(term);
+				updatePosCol(currentChar, token);
+				//back();
 				return token;
 		// OPR >=
 		// OPR e RCB <
@@ -275,106 +321,176 @@ public class OScanner {
 				}else if(isRCBTraco(currentChar)) {
 					term += currentChar;
 					estado = 17;
-				}/*else {
-					System.out.println("Invalido");
-				}*///ERRO
-				else {
-					term+= currentChar;
-					estado = 23;
 				}
+				else
+					estado = 13;
+				//ERRO
+				/*else {
+					estado = 13;
+					pos--;
+				}*/
 				break;
 			// RCB
 			case 17:
 				token = new Token();
-				token.setType(token.TK_RCB);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_RCB);
+				token.setLexema(term);
+				//back();
+				updatePosCol(currentChar, token);
 				return token;
 			//OPRMATERMATICO
 			case 18:
 				token = new Token();
-				token.setType(token.TK_OPRMATEMATICO);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_OPRMATEMATICO);
+				token.setLexema(term);
+				//back();
+				updatePosCol(currentChar, token);
 				return token;
 			// AB_P
 			case 19:
 				token = new Token();
-				token.setType(token.TK_AB_P);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_AB_P);
+				token.setLexema(term);
+				updatePosCol(currentChar, token);
 				return token;
 			// FC_P
 			case 20:
 				token = new Token();
-				token.setType(token.TK_FC_P);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_FC_P);
+				token.setLexema(term);
+				updatePosCol(currentChar, token);
 				return token;
 			// PT_V
 			case 21:
 				token = new Token();
-				token.setType(token.TK_PT_V);
-				token.setText(term);
-				back();
+				token.setClasse(Token.TK_PT_V);
+				token.setLexema(term);
+				updatePosCol(currentChar, token);
 				return token;
+				// se a pos == size não volta uma posição
+				/*if(tamanho == pos) {
+					return token;
+				}
+				else {
+					back();
+					return token;
+				
+				}*/
 			// VIR
 			case 22:
 				token = new Token();
-				token.setType(token.TK_VIR);
-				token.setText(term);
-				//back();
+				token.setClasse(Token.TK_VIR);
+				token.setLexema(term);
+				updatePosCol(currentChar, token);
 				return token;
 				
-			// ERRO
+			// ERRO ID
 			case 23:
-				//colErro = pos-contaColErro;
-				contaColErro++;
-				//token.setColunaAtual(pos);
-				if(isSpace(currentChar)) {
-					term += currentChar;
-					estado = 24;
+				//contaColErro++;
+				if(isVIR(currentChar) || isPT_V(currentChar) || isSpace(currentChar)) {
+					estado = 27;
+					back();
+					back();
 				}
-				else if(isEOF()) {
-					term += currentChar;
-					estado = 25;
-				}
-				else if(isVIR(currentChar) || isPT_V(currentChar)) {
-					estado = 24;
+				else if(currentChar == '\0') {
+					estado = 27;
 				}
 				else {
+					term += temp;
 					term += currentChar;
-					estado = 23;
+					estado = 28;
 				}
 				break;
 			
 			case 24:
-				colErro = pos-contaColErro-1; //-1 pois a posicao sempre +1
-
 				token = new Token();
-				token.setType(token.TK_ERRO);
-				token.setText(term);
-				token.setColunaAtual(colErro);
-				back();
+				token.setClasse(Token.TK_ERRO);
+				token.setLexema(term);
+				token.setColunaAtual(posErro);
+				//
+				updatePosCol(currentChar, token);
 				return token;
+				/*if(currentChar =='\0') {
+					return token;
+				}
+				else {
+					back();
+					return token;
+				}
+				 */	
 				
 			case 25:
 				token = new Token();
-				token.setType(token.TK_ERRO);
-				token.setText(term);
-				//back();
+				token.setClasse(Token.TK_ERRO);
+				token.setLexema(term);
 				return token;
 			
 			case 26:
 				token = new Token();
-				token.setType(token.TK_EOF);
-				token.setText(term);
-				//back();
+				token.setClasse(Token.TK_EOF);
+				token.setLexema(term);
 				return token;
-			
+				
+			case 27:
+				token = new Token();
+				token.setClasse(Token.TK_IDENTIFIER);
+				token.setLexema(term);
+				pos = pos - 1;
+				token.setColunaAtual(pos);
+				return token;
+				
+			case 28:
+				if(isVIR(currentChar) || isPT_V(currentChar)) {
+					back();
+					estado = 24;
+				}
+				else if(currentChar =='\0' || isSpace(currentChar)) {
+					estado = 24;
+				}
+				else {
+					term += currentChar;
+					estado = 28;
+				}
+				break;
+				
+			case 29:
+				if(isVIR(currentChar) || isPT_V(currentChar) || isSpace(currentChar)) {
+					estado = 30;
+					back();
+					back();
+				}
+				else if(currentChar == '\0') {
+					estado = 30;
+				}
+				else {
+					term += temp;
+					term += currentChar;
+					estado = 28;
+				}
+				break;
+				
+			case 30:
+				token = new Token();
+				token.setClasse(Token.TK_NUMBER);
+				token.setLexema(term);
+				pos = pos - 1;
+				token.setColunaAtual(pos);
+				return token;
 			}
 		}
 	}
+
+	private void updatePosCol(char currentChar, Token token) {
+		if(currentChar == '\0') {
+			token.setColunaAtual(pos);
+			back();
+		}
+		else {
+			back();
+			token.setColunaAtual(pos);
+		}
+	}
+	
 	//num
 	private boolean isDigit(char c) {
 		return c >= '0' && c <= '9';
@@ -393,18 +509,19 @@ public class OScanner {
 	private boolean isQuote(char c) {
 		return c == '"';
 	}
-	private boolean isOtherSymbols(char c) {	// remove "
+	/*
+	private boolean isOtherSymbolsNoCloseQuote(char c) {	// remove "
 		String symbols = ",;:.!?\\*+-/(){}[]+<>='";
 		String cAux = Character.toString(c);
 		return symbols.contains(cAux);
 	}
 	
-	private boolean isOtherSymbolsQuote(char c) { //remove }
+	private boolean isOtherSymbolsNoCloseBracket(char c) { //remove }
 		String symbols = ",;:.!?\\*+-/(){[]+<>='\"";
 		String cAux = Character.toString(c);
 		return symbols.contains(cAux);
 	}
-	
+	*/
 	private boolean isUnderline(char c) {
 		return c == '_';
 	}
@@ -445,9 +562,9 @@ public class OScanner {
 	private boolean isChar(char c) {
 		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); 
 	}
-	private boolean isOperator(char c) {
+	/*private boolean isOperator(char c) {
 		return c == '>' || c == '<' || c == '=' || c == '!'; 
-	}
+	}*/
 	private boolean isSpace(char c) {
 		return c == ' ' || c == '\t' || c == '\n' || c == '\r'; 
 	}
