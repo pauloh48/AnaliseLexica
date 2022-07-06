@@ -24,7 +24,7 @@ public class Token {
 		this.tipo = "Nulo";
 		
 		if(classe.equals("NUM")) {
-			if(text.contains(".") || text.contains("E") || text.contains("e")) {
+			if(text.contains(".") || text.contains("-")) {
 				this.tipo = "flutuante";
 			}else {
 				this.tipo = "inteiro";

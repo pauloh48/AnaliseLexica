@@ -71,7 +71,7 @@ public class mainScanner {
 					else System.out.println(token);
 					if(token.getClasse().equals("ERRO")) 
 						System.out.println("\tERRO lexico – Caractere invalido na\n"
-								+ "\tlinguagem. Linha " + l + ", coluna " + c + ".");
+								+ "\tlinguagem. Linha " + l + ", coluna " + (c-1) + ".");
 				}
 			}
 			sc.setPos(0); //volta pos coluna para inicio, 0

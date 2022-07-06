@@ -6,6 +6,7 @@ public class OScanner {
 	private int		pos;
 	private int 	posErro = 0;
 	
+	
 	public int getPos() {
 		return pos;
 	}
@@ -18,17 +19,13 @@ public class OScanner {
 	public Token nextToken(String contenLine) {
 		char currentChar;
 		char temp = 0;
-		//
-		//int tamanho = contenLine.length();
-		
-		//
 		content = contenLine.toCharArray();
-		//int tma = content.length;
 		Token token;
 		String term = "";
+		/*
 		if(isEOF()) {
 			return null;
-		}
+		}*/
 		estado = 0;
 
 		while(true) {	
@@ -140,8 +137,10 @@ public class OScanner {
 				if(isDigit(currentChar)) {
 					term += currentChar;
 					estado = 3;
-				}
-				else if(isSpace(currentChar)) {
+				}else if(isE_e(currentChar)) {
+					term += currentChar;
+					estado = 4;
+				}else if(isSpace(currentChar)) {
 					//ignora espaco
 					estado = 5;
 				}
@@ -164,7 +163,7 @@ public class OScanner {
 					term += currentChar;
 					estado = 3;
 				}
-				if(isDigit(currentChar)) {
+				else if(isDigit(currentChar)) {
 					term += currentChar;
 					estado = 3;
 				}
@@ -247,41 +246,11 @@ public class OScanner {
 					estado = 24;
 					posErro = pos;
 				}
-				/*
-				//
-				if(isDigit(currentChar) || isChar(currentChar) || isOtherSymbolsNoCloseBracket(currentChar)) {
-					term += currentChar;
-					estado = 9;
-				}
-				else if(isFechaColchete(currentChar)) {
-					term += currentChar;
-					estado = 10;
-				}
-				//ERRO
-				else {
-					term+= currentChar;
-					estado = 23;
-				}
-				//
-				if(isQuote(currentChar)) {
-					term += currentChar;
-					estado = 7;
-				}else if(currentChar != '\0'){
-					term += currentChar;
-					estado = 6;
-				}
-				//ERRO
-				if(currentChar == '\0'){
-					term+= currentChar;
-					estado = 24;
-					posErro = pos;
-				}*/
 				break;
 			case 10:
 				token = new Token();
 				token.setClasse(Token.TK_COMENTARIO);
 				token.setLexema(term);
-				//back();
 				updatePosCol(currentChar, token);
 				return token;
 		// COMENTARIO		
@@ -294,18 +263,12 @@ public class OScanner {
 				//
 				else
 					estado = 13;
-				//ERRO
-				//else {
-					//estado = 13;
-					//pos--;
-				//}
 				break;
 			case 13:
 				token = new Token();
 				token.setClasse(Token.TK_OPERATOR);
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
-				//back();
 				return token;
 		// OPR >=
 		// OPR e RCB <
@@ -324,18 +287,12 @@ public class OScanner {
 				}
 				else
 					estado = 13;
-				//ERRO
-				/*else {
-					estado = 13;
-					pos--;
-				}*/
 				break;
 			// RCB
 			case 17:
 				token = new Token();
 				token.setClasse(Token.TK_RCB);
 				token.setLexema(term);
-				//back();
 				updatePosCol(currentChar, token);
 				return token;
 			//OPRMATERMATICO
@@ -343,7 +300,6 @@ public class OScanner {
 				token = new Token();
 				token.setClasse(Token.TK_OPRMATEMATICO);
 				token.setLexema(term);
-				//back();
 				updatePosCol(currentChar, token);
 				return token;
 			// AB_P
@@ -367,15 +323,6 @@ public class OScanner {
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-				// se a pos == size não volta uma posição
-				/*if(tamanho == pos) {
-					return token;
-				}
-				else {
-					back();
-					return token;
-				
-				}*/
 			// VIR
 			case 22:
 				token = new Token();
@@ -383,7 +330,6 @@ public class OScanner {
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-				
 			// ERRO ID
 			case 23:
 				//contaColErro++;
@@ -407,24 +353,13 @@ public class OScanner {
 				token.setClasse(Token.TK_ERRO);
 				token.setLexema(term);
 				token.setColunaAtual(posErro);
-				//
 				updatePosCol(currentChar, token);
 				return token;
-				/*if(currentChar =='\0') {
-					return token;
-				}
-				else {
-					back();
-					return token;
-				}
-				 */	
-				
 			case 25:
 				token = new Token();
 				token.setClasse(Token.TK_ERRO);
 				token.setLexema(term);
 				return token;
-			
 			case 26:
 				token = new Token();
 				token.setClasse(Token.TK_EOF);
