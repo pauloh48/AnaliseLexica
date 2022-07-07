@@ -25,20 +25,22 @@ public class mainScanner {
 		hm.put("literal","literal");
 		hm.put("real","real");
 		
-		String filename = "/home/paulo/Documents/AnaliseLexica-main/analisadorLexico/src/analisadorLexico/fonte.alg";
+		/*String filename = "C:\\Users\\lfsil\\OneDrive\\Documentos\\Faculdade\\Compiladores\\"
+				+ "T1\\Analisador Léxico 3\\AnaliseLexica-main\\analisadorLexico\\src\\"
+				+ "analisadorLexico\\fonte.alg";
+		 */String filename = "/home/paulo/Documents/AnaliseLexica-main/analisadorLexico/src"
+		 		+ "/analisadorLexico/fonte.alg";
+		 
 		BufferedReader conteudoAtualLine = new BufferedReader(new FileReader(filename));
-		
 		Token token = null;
 		String line = "";
 		
 		int l = 1;
 		int c = 0;
-		//int size = 0;
 		String tipo_tabela;
 		OScanner sc = new OScanner();
 
 		while ((line = conteudoAtualLine.readLine()) != null) {
-			//size = line.length();
 			while(c < line.length()) {
 				token = sc.nextToken(line);
 				if(token == null) 
@@ -49,7 +51,8 @@ public class mainScanner {
 				if(token != null) {
 					if(token.getClasse().equals("ID")) {
 						
-						/*Verificar na hash table se é uma palavra reservada ou se já está preenchido na hash table*/
+						/*Verificar na hash table se é uma palavra reservada ou 
+						 * se já está preenchido na hash table*/
 						/*Se não estiver preenchido, inserir e retornar com o tipo = Nulo */
 						tipo_tabela = hm.get(token.getLexema());
 						
@@ -66,12 +69,15 @@ public class mainScanner {
 								tipo_tabela = hm.get(token.getLexema());
 							}
 						}
-						System.out.println("Classe: " + hm.get(token.getLexema()) + ", Lexema: " + token.getLexema() + ", tipo: " + tipo_tabela);
+						System.out.println("Classe: " + hm.get(token.getLexema()) + 
+											", Lexema: " + token.getLexema() + ", tipo: " 
+											+ tipo_tabela);
 					}
 					else System.out.println(token);
 					if(token.getClasse().equals("ERRO")) 
 						System.out.println("\tERRO lexico – Caractere invalido na\n"
-								+ "\tlinguagem. Linha " + l + ", coluna " + (c-1) + ".");
+											+ "\tlinguagem. Linha " + l + ", coluna " 
+											+ sc.getPosErro() + ".");
 				}
 			}
 			sc.setPos(0); //volta pos coluna para inicio, 0

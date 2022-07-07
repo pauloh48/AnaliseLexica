@@ -6,7 +6,14 @@ public class OScanner {
 	private int		pos;
 	private int 	posErro = 0;
 	
-	
+	public int getPosErro() {
+		return posErro;
+	}
+
+	public void setPosErro(int posErro) {
+		this.posErro = posErro;
+	}
+
 	public int getPos() {
 		return pos;
 	}
@@ -22,10 +29,6 @@ public class OScanner {
 		content = contenLine.toCharArray();
 		Token token;
 		String term = "";
-		/*
-		if(isEOF()) {
-			return null;
-		}*/
 		estado = 0;
 
 		while(true) {	
@@ -91,15 +94,15 @@ public class OScanner {
 				else if (isSpace(currentChar)) {
 					estado = 0;
 				}
-				//EOF
+				// EOF
 				else if(isEOF() && currentChar == '\0') {
 					estado = 26;
 					return null;
 				}
-				//ERRO
+				// ERRO
 				else {
 					term+= currentChar;
-					posErro = pos;
+					setPosErro(pos);
 					estado = 28;
 				}
 				break;
@@ -130,7 +133,7 @@ public class OScanner {
 				else {
 					temp+= currentChar;
 					estado = 29;
-					posErro = pos;
+					setPosErro(pos);
 				}
 				break;
 			case 3:
@@ -155,7 +158,7 @@ public class OScanner {
 				else {
 					temp+= currentChar;
 					estado = 29;
-					posErro = pos;
+					setPosErro(pos);
 				}
 				break;
 			case 4:
@@ -167,10 +170,18 @@ public class OScanner {
 					term += currentChar;
 					estado = 3;
 				}
+				else if(isVIR(currentChar) || isPT_V(currentChar) || isFC_P(currentChar)) {
+					back();
+					estado = 5;
+				}
+				else if(currentChar == '\0') {
+					estado = 5;
+				}
 				//ERRO
 				else {
+					setPosErro(pos);
 					term+= currentChar;
-					estado = 23;
+					estado = 29;
 				}
 				break;
 			case 5:
@@ -181,7 +192,8 @@ public class OScanner {
 				return token;
 				
 		// NUM ******************************
-		// LITERAL ******************
+				
+		// LITERAL **************************
 			case 6:
 				if(isQuote(currentChar)) {
 					term += currentChar;
@@ -194,7 +206,7 @@ public class OScanner {
 				if(currentChar == '\0'){
 					term+= currentChar;
 					estado = 24;
-					posErro = pos;
+					setPosErro(pos);
 				}
 				break;
 			case 7:
@@ -203,8 +215,9 @@ public class OScanner {
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-		// LITERAL ******************
-		// ID
+		// LITERAL **************************
+		
+		// ID *******************************
 			case 8:
 				if(isChar(currentChar) || isDigit(currentChar) || isUnderline(currentChar)) {
 					term += currentChar;
@@ -221,7 +234,7 @@ public class OScanner {
 					//temporário para verificar se realmente é erro
 					temp = currentChar;
 					estado = 23;
-					posErro = pos;
+					setPosErro(pos);
 				}
 				else {
 					token = new Token();
@@ -231,8 +244,9 @@ public class OScanner {
 					return token;
 				}
 				break;
-		// ID
-		// COMENTARIO
+		// ID *******************************
+				
+		// COMENTARIO ***********************
 			case 9:
 				if(isFechaColchete(currentChar)) {
 					term += currentChar;
@@ -244,7 +258,7 @@ public class OScanner {
 				if(currentChar == '\0'){
 					term+= currentChar;
 					estado = 24;
-					posErro = pos;
+					setPosErro(pos);
 				}
 				break;
 			case 10:
@@ -253,16 +267,22 @@ public class OScanner {
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-		// COMENTARIO		
-		// OPR >= 
+		// COMENTARIO ***********************
+				
+		// OPR >=      ***********************
 			case 12:
+				// >=
 				if(isOPRIgual(currentChar)) {
 					term += currentChar;
 					estado = 13;
 				}
-				//
-				else
+				// >
+				else {
 					estado = 13;
+					if(currentChar != '\0') {
+						back();
+					}
+				}
 				break;
 			case 13:
 				token = new Token();
@@ -270,8 +290,9 @@ public class OScanner {
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-		// OPR >=
-		// OPR e RCB <
+		// OPR >=		***********************
+				
+		// OPR e RCB <  ***********************
 			case 15:
 				// OPR <=
 				if(isOPRIgual(currentChar)) {
@@ -281,56 +302,64 @@ public class OScanner {
 				}else if(isOPRMaior(currentChar)) {
 					term += currentChar;
 					estado = 13;
+				// <-
 				}else if(isRCBTraco(currentChar)) {
 					term += currentChar;
 					estado = 17;
 				}
-				else
+				// <
+				else {
 					estado = 13;
+					if(currentChar != '\0') {
+						back();
+					}
+				}
 				break;
-			// RCB
+			// OPR e RCB <  ***********************
 			case 17:
 				token = new Token();
 				token.setClasse(Token.TK_RCB);
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-			//OPRMATERMATICO
+				
+			//OPRMATERMATICO ***********************
 			case 18:
 				token = new Token();
 				token.setClasse(Token.TK_OPRMATEMATICO);
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-			// AB_P
+				
+			// AB_P ********************************
 			case 19:
 				token = new Token();
 				token.setClasse(Token.TK_AB_P);
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-			// FC_P
+			// FC_P ********************************
 			case 20:
 				token = new Token();
 				token.setClasse(Token.TK_FC_P);
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-			// PT_V
+			// PT_V ********************************
 			case 21:
 				token = new Token();
 				token.setClasse(Token.TK_PT_V);
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-			// VIR
+			// VIR *********************************
 			case 22:
 				token = new Token();
 				token.setClasse(Token.TK_VIR);
 				token.setLexema(term);
 				updatePosCol(currentChar, token);
 				return token;
-			// ERRO ID
+			// ERRO ID ******************************
 			case 23:
 				//contaColErro++;
 				if(isVIR(currentChar) || isPT_V(currentChar) || isSpace(currentChar)) {
@@ -352,20 +381,21 @@ public class OScanner {
 				token = new Token();
 				token.setClasse(Token.TK_ERRO);
 				token.setLexema(term);
-				token.setColunaAtual(posErro);
+				token.setColunaAtual(pos);
 				updatePosCol(currentChar, token);
 				return token;
-			case 25:
+			/*case 25:
 				token = new Token();
 				token.setClasse(Token.TK_ERRO);
 				token.setLexema(term);
 				return token;
-			case 26:
+			*/case 26:
 				token = new Token();
 				token.setClasse(Token.TK_EOF);
 				token.setLexema(term);
 				return token;
-				
+			
+		// ERRO ID ******************************	
 			case 27:
 				token = new Token();
 				token.setClasse(Token.TK_IDENTIFIER);
@@ -373,7 +403,8 @@ public class OScanner {
 				pos = pos - 1;
 				token.setColunaAtual(pos);
 				return token;
-				
+		
+		// ERRO     *****************************
 			case 28:
 				if(isVIR(currentChar) || isPT_V(currentChar)) {
 					back();
