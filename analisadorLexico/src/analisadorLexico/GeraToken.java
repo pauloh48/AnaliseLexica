@@ -392,7 +392,7 @@ public class GeraToken {
 			// ERRO ID ******************************
 			case 23:
 				//contaColErro++;
-				if(isVIR(currentChar) || isPT_V(currentChar) || isSpace(currentChar)) {
+				if(isVIR(currentChar) || isPT_V(currentChar) || isSpace(currentChar) || isAbreColchete(temp)) {
 					estado = 27;
 					back();
 					back();
