@@ -20,11 +20,11 @@ public class Token {
 	private int 	colunaAtual;
 	private String 	tipo;
 	
-	public String tipoLexema(String classe, String text) {
+	public String tipoLexema(String classe, String lexema) {
 		this.tipo = "Nulo";
 		
 		if(classe.equals("NUM")) {
-			if(text.contains(".") || text.contains("-")) {
+			if(lexema.contains(".") || lexema.contains("-")) {
 				this.tipo = "flutuante";
 			}else {
 				this.tipo = "inteiro";
@@ -87,6 +87,6 @@ public class Token {
 	@Override
 	public String toString() {
 		return "Classe: " + classe + ", Lexema: " + lexema 
-				+ ", tipo: " + tipoLexema(classe, lexema);
+				+ ", tipo: " + tipo;
 	}
 }

@@ -1,6 +1,6 @@
 package analisadorLexico;
 
-public class OScanner {
+public class GeraToken {
 	private char[] 	content;
 	private int 	estado;
 	private int		pos;
@@ -25,6 +25,7 @@ public class OScanner {
 	//automato 
 	public Token nextToken(String contenLine) {
 		char currentChar;
+		char charAnterior = '\0';
 		char temp = 0;
 		content = contenLine.toCharArray();
 		Token token;
@@ -114,6 +115,7 @@ public class OScanner {
 				}
 				else if(isPonto(currentChar)) {
 					term += currentChar;
+					charAnterior = currentChar;
 					estado = 3;
 				}else if(isE_e(currentChar)) {
 					term += currentChar;
@@ -122,7 +124,8 @@ public class OScanner {
 					//ignora espaco
 					estado = 5;
 				}
-				else if(isVIR(currentChar) || isPT_V(currentChar) || isFC_P(currentChar)) {
+				else if(isVIR(currentChar) || isPT_V(currentChar) || 
+						isFC_P(currentChar) || isAbreColchete(currentChar)) {
 					back();
 					estado = 5;
 				}
@@ -145,7 +148,12 @@ public class OScanner {
 					estado = 4;
 				}else if(isSpace(currentChar)) {
 					//ignora espaco
-					estado = 5;
+					if(charAnterior == '.') {
+						estado = 24; //erro
+						posErro++;
+					}
+					else
+						estado = 5;
 				}
 				else if(isVIR(currentChar) || isPT_V(currentChar) || isFC_P(currentChar)) {
 					back();
