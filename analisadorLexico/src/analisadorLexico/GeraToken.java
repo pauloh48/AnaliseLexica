@@ -30,6 +30,7 @@ public class GeraToken {
 		content = contenLine.toCharArray();
 		Token token;
 		String term = "";
+		String msgErro = "";
 		estado = 0;
 
 		while(true) {	
@@ -105,6 +106,7 @@ public class GeraToken {
 					term+= currentChar;
 					setPosErro(pos);
 					estado = 28;
+					msgErro = "palavra invalida";
 				}
 				break;
 		// NUM ******************************
@@ -137,6 +139,7 @@ public class GeraToken {
 					temp+= currentChar;
 					estado = 29;
 					setPosErro(pos);
+					msgErro = "numeoro Invalido";
 				}
 				break;
 			case 3:
@@ -151,6 +154,7 @@ public class GeraToken {
 					if(charAnterior == '.') {
 						estado = 24; //erro
 						posErro++;
+						msgErro = "numeoro incompleto";
 					}
 					else
 						estado = 5;
@@ -167,6 +171,7 @@ public class GeraToken {
 					temp+= currentChar;
 					estado = 29;
 					setPosErro(pos);
+					msgErro = "numeoro Invalido";
 				}
 				break;
 			case 4:
@@ -190,6 +195,7 @@ public class GeraToken {
 					setPosErro(pos);
 					term+= currentChar;
 					estado = 29;
+					msgErro = "numeoro Invalido";
 				}
 				break;
 			case 5:
@@ -215,6 +221,7 @@ public class GeraToken {
 					term+= currentChar;
 					estado = 24;
 					setPosErro(pos);
+					msgErro = "nao fechou aspas duplas '\"'";
 				}
 				break;
 			case 7:
@@ -263,10 +270,12 @@ public class GeraToken {
 					term += currentChar;
 					estado = 9;
 				}
+				//ERRO
 				if(currentChar == '\0'){
 					term+= currentChar;
 					estado = 24;
 					setPosErro(pos);
+					msgErro = "nao fechou colchetes '}'";
 				}
 				break;
 			case 10:
@@ -377,11 +386,12 @@ public class GeraToken {
 				}
 				else if(currentChar == '\0') {
 					estado = 27;
-				}
+				}//ERRO
 				else {
 					term += temp;
 					term += currentChar;
 					estado = 28;
+					msgErro = "identificador Invalido";
 				}
 				break;
 			
@@ -390,6 +400,7 @@ public class GeraToken {
 				token.setClasse(Token.TK_ERRO);
 				token.setLexema(term);
 				token.setColunaAtual(pos);
+				token.setMsgErro(msgErro);
 				updatePosCol(currentChar, token);
 				return token;
 			/*case 25:

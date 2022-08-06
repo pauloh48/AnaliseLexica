@@ -77,7 +77,8 @@ public class Scanner {
 			if(token.getClasse().equals("ERRO")) 
 				System.out.println("\tERRO lexico – Caractere invalido na\n"
 									+ "\tlinguagem. Linha " + linErro + ", coluna " 
-									+ gt.getPosErro() + ".");
+									+ gt.getPosErro() + "\n\tTipo: " + token.getMsgErro() 
+									+ ".");
 		}
 		return token;
 	}

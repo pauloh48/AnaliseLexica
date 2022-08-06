@@ -19,6 +19,7 @@ public class Token {
 	private String 	lexema;
 	private int 	colunaAtual;
 	private String 	tipo;
+	private String msgErro;
 	
 	public String tipoLexema(String classe, String lexema) {
 		this.tipo = "Nulo";
@@ -82,6 +83,14 @@ public class Token {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getMsgErro() {
+		return msgErro;
+	}
+
+	public void setMsgErro(String msgErro) {
+		this.msgErro = msgErro;
 	}
 
 	@Override
