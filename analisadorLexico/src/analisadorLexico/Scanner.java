@@ -99,6 +99,7 @@ public class Scanner {
 		this.linErro = linErro;
 	}
 	public void incrementaLinErro() {
-		linErro = linErro++;
+		linErro += 1;
+		setLinErro(linErro);
 	}
 }

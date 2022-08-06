@@ -121,13 +121,14 @@ public class GeraToken {
 					estado = 3;
 				}else if(isE_e(currentChar)) {
 					term += currentChar;
+					charAnterior = currentChar;
 					estado = 4;
 				}else if(isSpace(currentChar)) {
 					//ignora espaco
 					estado = 5;
 				}
 				else if(isVIR(currentChar) || isPT_V(currentChar) || 
-						isFC_P(currentChar) || isAbreColchete(currentChar)) {
+						isFC_P(currentChar)) {
 					back();
 					estado = 5;
 				}
@@ -145,23 +146,26 @@ public class GeraToken {
 			case 3:
 				if(isDigit(currentChar)) {
 					term += currentChar;
+					charAnterior = 0;
 					estado = 3;
 				}else if(isE_e(currentChar)) {
 					term += currentChar;
+					charAnterior = 0;
 					estado = 4;
 				}else if(isSpace(currentChar)) {
-					//ignora espaco
-					if(charAnterior == '.') {
+					charAnterior = 0;
+					estado = 5;
+				}
+				else if(isVIR(currentChar) || isPT_V(currentChar) || 
+						isFC_P(currentChar) || currentChar == '\0' || isAbreColchete(currentChar)) {
+					back();
+					if(charAnterior == '.' || charAnterior == '-' || charAnterior == '+') {
 						estado = 24; //erro
 						posErro++;
 						msgErro = "numeoro incompleto";
 					}
 					else
 						estado = 5;
-				}
-				else if(isVIR(currentChar) || isPT_V(currentChar) || isFC_P(currentChar)) {
-					back();
-					estado = 5;
 				}
 				else if(currentChar == '\0') {
 					estado = 5;
@@ -177,15 +181,24 @@ public class GeraToken {
 			case 4:
 				if(ispositivo_negativo(currentChar)) {
 					term += currentChar;
+					charAnterior = currentChar;
 					estado = 3;
 				}
 				else if(isDigit(currentChar)) {
 					term += currentChar;
+					charAnterior = 0;
 					estado = 3;
 				}
-				else if(isVIR(currentChar) || isPT_V(currentChar) || isFC_P(currentChar)) {
+				else if(isVIR(currentChar) || isPT_V(currentChar) || 
+						isFC_P(currentChar) || currentChar == '\0' || isAbreColchete(currentChar)) {
 					back();
-					estado = 5;
+					if(charAnterior == 'E' || charAnterior == 'e') {
+						estado = 24; //erro
+						posErro++;
+						msgErro = "numeoro incompleto";
+					}
+					else
+						estado = 5;
 				}
 				else if(currentChar == '\0') {
 					estado = 5;
@@ -439,7 +452,8 @@ public class GeraToken {
 				break;
 				
 			case 29:
-				if(isVIR(currentChar) || isPT_V(currentChar) || isSpace(currentChar)) {
+				if(isVIR(currentChar) || isPT_V(currentChar) || 
+						isSpace(currentChar) || isAbreColchete(temp)) {
 					estado = 30;
 					back();
 					back();
