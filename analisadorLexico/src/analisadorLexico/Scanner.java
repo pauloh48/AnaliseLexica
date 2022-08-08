@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Scanner {
 	private int col;
-	private int linErro = 1;
+	private int lin = 1;
 	
 	public static HashMap<String, String> tabelaSimbolos() {
 		// palavras reservadas -> hash map
@@ -61,6 +61,7 @@ public class Scanner {
 					else {
 						tipo_tabela = hm.get(token.getLexema());
 						token.setTipo(hm.get(token.getLexema()));
+						token.setClasse(hm.get(token.getLexema()));
 						
 					}
 				}
@@ -76,7 +77,7 @@ public class Scanner {
 			}
 			if(token.getClasse().equals("ERRO")) 
 				System.out.println("\tERRO lexico – Caractere invalido na\n"
-									+ "\tlinguagem. Linha " + linErro + ", coluna " 
+									+ "\tlinguagem. Linha " + lin + ", coluna " 
 									+ gt.getPosErro() + "\n\tTipo: " + token.getMsgErro() 
 									+ ".");
 		}
@@ -91,15 +92,15 @@ public class Scanner {
 		this.col = col;
 	}
 
-	public int getLinErro() {
-		return linErro;
+	public int getLin() {
+		return lin;
 	}
 
-	public void setLinErro(int linErro) {
-		this.linErro = linErro;
+	public void setLin(int lin) {
+		this.lin = lin;
 	}
-	public void incrementaLinErro() {
-		linErro += 1;
-		setLinErro(linErro);
+	public void incrementaLin() {
+		lin += 1;
+		setLin(lin);
 	}
 }
