@@ -157,12 +157,15 @@ public class GeraToken {
 					estado = 5;
 				}
 				else if(isVIR(currentChar) || isPT_V(currentChar) || 
-						isFC_P(currentChar) || currentChar == '\0' || isAbreColchete(currentChar)) {
+						isFC_P(currentChar) /*|| currentChar == '\0'*/ || isAbreColchete(currentChar)) {
 					back();
+					if(currentChar == '\0') {
+						//back();
+					}
 					if(charAnterior == '.' || charAnterior == '-' || charAnterior == '+') {
 						estado = 24; //erro
 						posErro++;
-						msgErro = "numeoro incompleto";
+						msgErro = "numero incompleto";
 					}
 					else
 						estado = 5;
@@ -175,7 +178,7 @@ public class GeraToken {
 					temp+= currentChar;
 					estado = 29;
 					setPosErro(pos);
-					msgErro = "numeoro Invalido";
+					msgErro = "numero Invalido";
 				}
 				break;
 			case 4:
@@ -195,7 +198,7 @@ public class GeraToken {
 					if(charAnterior == 'E' || charAnterior == 'e') {
 						estado = 24; //erro
 						posErro++;
-						msgErro = "numeoro incompleto";
+						msgErro = "numero incompleto";
 					}
 					else
 						estado = 5;
@@ -208,7 +211,7 @@ public class GeraToken {
 					setPosErro(pos);
 					term+= currentChar;
 					estado = 29;
-					msgErro = "numeoro Invalido";
+					msgErro = "numero Invalido";
 				}
 				break;
 			case 5:
