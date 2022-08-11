@@ -17,8 +17,8 @@ public class Scanner {
 		hm.put("se","se");
 		hm.put("entao","entao");
 		hm.put("fimse","fimse");
-		hm.put("Repita","Repita");
-		hm.put("fimRepita","fimRepita");
+		hm.put("repita","repita");
+		hm.put("fimrepita","fimrepita");
 		hm.put("fim","fim");
 		hm.put("inteiro","inteiro");
 		hm.put("literal","literal");
@@ -101,6 +101,10 @@ public class Scanner {
 	}
 	public void incrementaLin() {
 		lin += 1;
+		setLin(lin);
+	}
+	public void decrementaLin() {
+		lin -= 1;
 		setLin(lin);
 	}
 }

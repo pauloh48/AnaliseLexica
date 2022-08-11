@@ -1,4 +1,4 @@
-,P,V,LV,D,L,TIPO,A,ES,ARG,CMD,LD,OPRD,COND,CAB,EXP_R,CP,R,CABR,CPR,inicio,varinicio,varfim,pt_v,id,vir,inteiro,real,literal,leia,escreva,lit,num,rcb,opm,se,ab_p,fc_p,então,por,fimse,repita,fimrepita,fim,opr,$
+,P,V,LV,D,L,TIPO,A,ES,ARG,CMD,LD,OPRD,COND,CAB,EXP_R,CP,R,CABR,CPR,inicio,varinicio,varfim,PT_V,ID,VIR,inteiro,real,literal,leia,escreva,LIT,NUM,RCB,OPM,se,AB_P,FC_P,entao,por,fimse,repita,fimrepita,fim,OPR,EOF
 0,1,,,,,,,,,,,,,,,,,,,S2,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro
 1,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,acc
 2,,3,,,,,,,,,,,,,,,,,,erro,S4,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro
@@ -58,7 +58,7 @@
 56,,,,,,,,,,,,,,,,,,,,erro,erro,erro,R23,erro,erro,erro,erro,erro,erro,erro,erro,erro,erro,R23,erro,erro,R23,erro,erro,erro,erro,erro,erro,R23,erro
 57,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,erro,erro,erro,erro,erro,R28,R28,erro,erro,erro,erro,R28,erro,erro,erro,erro,R28,erro,erro,erro,erro,erro
 58,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,erro,erro,erro,erro,erro,R29,R29,erro,erro,erro,erro,R29,erro,erro,erro,erro,R29,erro,erro,erro,erro,erro
-59,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,erro,erro,erro,erro,erro,R30,R30,erro,erro,erro,erro,R30,erro,erro,erro,erro,R30,erro,erro,erro,erro,erro
+59,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,R30,erro,erro,erro,erro,R30,R30,erro,erro,erro,erro,R30,erro,erro,erro,erro,R30,erro,erro,erro,erro,erro
 61,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,R35,erro,erro,erro,erro,R35,R35,erro,erro,erro,erro,R35,erro,erro,erro,erro,erro,R35,erro,R35,erro,erro
 62,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,R36,erro,erro,erro,erro,R36,R36,erro,erro,erro,erro,R36,erro,erro,erro,erro,erro,R36,erro,R36,erro,erro
 63,,,,,,,,,,,,,,,,,,,,erro,erro,erro,erro,R37,erro,erro,erro,erro,R37,R37,erro,erro,erro,erro,R37,erro,erro,erro,erro,erro,R37,erro,R37,erro,erro
