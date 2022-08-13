@@ -68,12 +68,12 @@ public class Scanner {
 			//	System.out.println("Classe: " + hm.get(token.getLexema()) + 
 			//						", Lexema: " + token.getLexema() + ", tipo: " 
 			//						+ tipo_tabela);
-				System.out.println(token);
+			//	System.out.println(token);
 			}
 			else { 
 				tipo_tabela = token.tipoLexema(token.getClasse(), token.getLexema());
 				token.setTipo(token.tipoLexema(token.getClasse(), token.getLexema()));
-				System.out.println(token);
+			//	System.out.println(token);
 			}
 			if(token.getClasse().equals("ERRO")) 
 				System.out.println("\tERRO lexico – Caractere invalido na\n"

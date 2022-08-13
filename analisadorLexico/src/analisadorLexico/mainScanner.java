@@ -1,5 +1,5 @@
 package analisadorLexico;
-import java.util.LinkedList;
+//import java.util.LinkedList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.Stack;
 public class mainScanner {
 
 	public static void main(String[] args) throws IOException {
-		//String filename = "C:/Users/lfsil/OneDrive/Documentos/Faculdade/Compiladores/T2/Analisador Sintático 2/AnaliseLexica-main/analisadorLexico/src/analisadorLexico/fonte.alg";
+		//String filename = "C:/Users/lfsil/OneDrive/Documentos/Faculdade/Compiladores/T2/Analisador Sintático 3/AnaliseLexica-main/analisadorLexico/src/analisadorLexico/fonte.alg";
 	    
 		String filename = "/home/paulo/Documents/AnaliseLexica/analisadorLexico/src/analisadorLexico/fonte.alg";
  		
@@ -21,7 +21,7 @@ public class mainScanner {
 		
 		Path file = Paths.get(filename);
 		long linhas = Files.lines(file).count();
-		System.out.println(linhas);
+		//System.out.println(linhas);
 		
 		/////////////////////////////////////////
 		
@@ -32,7 +32,7 @@ public class mainScanner {
 		
 		Token token = null;
 		String line = "";
-		String l2 = "";
+		String linhaCSV = "";
 		
 		//int l = 1;
 		//int col = 0;
@@ -40,6 +40,9 @@ public class mainScanner {
 		GeraToken gt = new GeraToken();
 		
 //inicio sintatico **************************
+		ErroSintatico error= new ErroSintatico();
+		HashMap<String, String> hmErro = ErroSintatico.erros();
+
 		
 		//regras
 		String[][] regra = new String[40][3];
@@ -164,10 +167,10 @@ public class mainScanner {
 		// pilha
         Stack<String> s = new Stack();
         s.push("0");
-        System.out.println(s.peek());
+//        System.out.println(s.peek());
         
         // abrir csv
-        //String filenameCSV = "C:/Users/lfsil/OneDrive/Documentos/Faculdade/Compiladores/T2/Analisador Sintático 2/AnaliseLexica-main/analisadorLexico/src/analisadorLexico/TabelaTransicoes.csv";
+        //String filenameCSV = "C:/Users/lfsil/OneDrive/Documentos/Faculdade/Compiladores/T2/Analisador Sintático 3/AnaliseLexica-main/analisadorLexico/src/analisadorLexico/TabelaTransicoes.csv";
         
         String filenameCSV = "/home/paulo/Documents/AnaliseLexica/analisadorLexico/src/analisadorLexico/TabelaTransicoes.csv";
 	    
@@ -176,59 +179,57 @@ public class mainScanner {
         
         int colCSV = 0;
         int qtdColCSV = 46;
-        String t;
-        int et = line.length();
+        String simboloCSV;
         String tmp;
         int j;
-        int start = 0;
+        int last = 0;
         int isEOF = 0;
-        String line2 = "";
 
 // fim sintatico ***************************
         principal:
-		while ((line = conteudoAtualLine.readLine()) != null /*&& cont <= 1*/) {
-			//while(col < line.length()) {
+		while ((line = conteudoAtualLine.readLine()) != null) {
 			while(sc.getCol() < line.length()) {
-				//** comentario por sintatico 
-				
-				if(start == 0) { //pega próximo token (última operação foi shift)
+				//** comentario por sintático 
+				//pega próximo token (última operação foi shift)
+				if(last == 0) {
 					token = sc.returnToken(hm, line, gt, sc);
-					start = 1;
+					last = 1;
 				}
 			//***sintatico
 				int flagPosCol = 0;
 				int Poscol = 0;
-				int contLine2 = 0;
-				//para ficar de acordo com a coluna numerica
-				contLine2 += -1;
+//				int contLine2 = 0;
+				//para ficar de acordo com a coluna numérica
+//				contLine2 += -1;
 				
 				String classeToEmpilha = "";
 				interno:
-				while ((l2 = conteudoCsv.readLine()) != null) {
-		        	String[] coluna = l2.split(delimiter);
+				while ((linhaCSV = conteudoCsv.readLine()) != null) {
+		        	String[] coluna = linhaCSV.split(delimiter);
 		        	operacao:
 					while(colCSV < qtdColCSV) {
-						t = coluna[colCSV];
-						String t2 = token.getClasse();
+						simboloCSV = coluna[colCSV];
+						String classe = token.getClasse();
 				////////////////////////////////////////////////////
 						if (isEOF == 2) {
-							t2 = "EOF";
+							classe = "EOF";
 						}
-						//int t3 = (int) s.peek();
-						String t4 = coluna[Poscol];
 						
 						//verifica se o valor da tabela é igual a classe do token
-						if(t.equals(t2/*.toLowerCase()*/)) {
+						if(simboloCSV.equals(classe/*.toLowerCase()*/)) {
 							//encontrou a coluna (classe)
 							flagPosCol = Poscol;
 							classeToEmpilha = coluna[flagPosCol];
 							
+							System.out.println(classe);
+
+							
 							//já encontrou a classe (coluna) na tabela, então passa a procurar o estado (linha)
-							contLine2++;
+//							contLine2++;
 							colCSV = 0;
 							while(true) {
-								l2 = conteudoCsv.readLine();
-								String[] coluna2 = l2.split(delimiter);
+								linhaCSV = conteudoCsv.readLine();
+								String[] coluna2 = linhaCSV.split(delimiter);
 								if( s.peek().equals(coluna2[0]) ){
 									
 									//SHIFT
@@ -237,15 +238,15 @@ public class mainScanner {
 										String tLine = coluna2[flagPosCol].substring(1);
 										s.push(classeToEmpilha);
 										s.push(tLine);
-										
+										System.out.println(classe);
 										System.out.println(s);
-//										System.out.println(coluna2[flagPosCol]);
+										System.out.println(coluna2[flagPosCol]);
 										
 										//verificar se o próximo é fim de arquivo, se for, vai para EOF fazer as reduções e desvios
 										//já está na última coluna e a próxima linha é fim de arquivo
 										if((sc.getCol()+1 >= line.length()) && ((sc.getLin() + 1) > linhas ) ){
 											isEOF = 2;
-											contLine2 = 0;
+//											contLine2 = 0;
 											colCSV=0;
 											Poscol = 0;
 											conteudoCsv.close();
@@ -254,13 +255,13 @@ public class mainScanner {
 										}
 										
 										//para pegar próximo token
-										start = 0;
+										last = 0;
 										
 									}
 									
 									//REDUÇÃO
 									if(coluna2[flagPosCol].contains("R")){
-										start = 1;
+										last = 1;
 										//o número da regra de redução
 										String tLine = coluna2[flagPosCol].substring(1);
 										//transforma esse número em inteiro
@@ -277,46 +278,46 @@ public class mainScanner {
 										}
 										
 										System.out.println(s);
-										
+//										
 										j = Integer.parseInt(tLine);
 										//salva o topo da pilha para procurar o desvio (num)
 										tmp = s.peek();
 										//empilha o lado esquerdo da regra
 										s.push(regra[j][0]);
-										contLine2 = 0;
+//										contLine2 = 0;
 										colCSV=0;
 										Poscol = 0;
 										conteudoCsv.close();
 										conteudoCsv = new BufferedReader(new FileReader(filenameCSV));
 										//procurar o DESVIO
-										while ((l2 = conteudoCsv.readLine()) != null) {
-											coluna = l2.split(delimiter);
+										while ((linhaCSV = conteudoCsv.readLine()) != null) {
+											coluna = linhaCSV.split(delimiter);
 											while(colCSV < qtdColCSV) {
-												t = coluna[colCSV];
-												t2 = regra[j][0]; //classe
-												if(t.equals(t2/*.toLowerCase()*/)) {
+												simboloCSV = coluna[colCSV];
+												classe = regra[j][0]; //classe
+												if(simboloCSV.equals(classe/*.toLowerCase()*/)) {
 													//encontrou a coluna (classe)
 													flagPosCol = Poscol;													
 													//já encontrou a classe (coluna) na tabela, então passa a procurar o estado (linha)
-													contLine2++;
+//													contLine2++;
 													colCSV = 0;
 													while(true) {
-														l2 = conteudoCsv.readLine();
-														coluna2 = l2.split(delimiter);
+														linhaCSV = conteudoCsv.readLine();
+														coluna2 = linhaCSV.split(delimiter);
 														if( tmp.equals(coluna2[0]) ){
 															//empilha o desvio
 															s.push(coluna2[flagPosCol]);
 															System.out.println(s);
-															contLine2 = 0;
+//															contLine2 = 0;
 															colCSV=0;
 															Poscol = 0;
 															conteudoCsv.close();
 															conteudoCsv = new BufferedReader(new FileReader(filenameCSV));
 															break operacao;
 														}
-														else {
-															contLine2++;
-														}
+//														else {
+//															contLine2++;
+//														}
 													}
 													
 												}
@@ -324,30 +325,42 @@ public class mainScanner {
 												Poscol++;			
 												colCSV++;
 											}
-											contLine2 = 0;
+//											contLine2 = 0;
 											colCSV=0;
 											Poscol = 0;
 										}
 										
-										System.out.println(s);
+//										System.out.println(s);
 									}
 									//ACEITAÇÃO
 									if(coluna2[flagPosCol].contains("acc")) {
 										System.out.println("ACC");
 										break principal;
 									}
+									// ERRO
+									if(coluna2[flagPosCol].contains("e")) {
+										System.out.println(flagPosCol);
+										System.out.println(coluna2[flagPosCol]);
+										System.out.println(classe);
+										//verifica se na tabela de erros do hash tem o erro
+										if(hmErro.containsKey(coluna2[flagPosCol])){
+											// imprime o valor do erro
+											System.out.println(hmErro.get(coluna2[flagPosCol]));
+										}
+										break principal;
+									}
 
 									break interno;
 								}
-								else{
-									contLine2++;
-								}
+//								else{
+//									contLine2++;
+//								}
 							}
 						}
 						Poscol++;			
 						colCSV++;
 					}
-					contLine2 = 0;
+//					contLine2 = 0;
 					colCSV=0;
 					Poscol = 0;
 					//break;
@@ -356,23 +369,14 @@ public class mainScanner {
 				conteudoCsv.close();
 				conteudoCsv = new BufferedReader(new FileReader(filenameCSV));
 			    delimiter = ",";
-		        et = line.length();
 		        //System.out.println(sc.getCol());
 			}
 			gt.setPos(0); //volta pos coluna para inicio, 0
-			//l++;
-			//col = 0;
 			sc.incrementaLin();
 			sc.setCol(0);
-			
-			//para fazer ações com EOF
-			/*if (conteudoAtualLine.readLine() == null) {
-				cont++;
-				sc.decrementaLin();
-			}*/
 		
 		}
-		System.out.println("Classe: EOF, Lexema: EOF, Tipo: Nulo");
+		//System.out.println("Classe: EOF, Lexema: EOF, Tipo: Nulo");
 		//System.out.println(hm);
 		
         
