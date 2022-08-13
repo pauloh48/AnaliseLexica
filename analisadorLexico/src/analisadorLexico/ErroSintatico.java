@@ -30,23 +30,34 @@ public class ErroSintatico {
 		HashMap<String, String> hmErro = new HashMap<String, String>();
 		//e1 : lexema inesperado
 		//e2 : lexema fora do escopo
-		hmErro.put("e1", "ERRO: lexema inesperado");
-		hmErro.put("e0", "ERRO: programa não inicializado corretamente (talvez falte inicio)");
-		hmErro.put("et1", "ERRO: programa não possui varinicio");
-		hmErro.put("et29", "ERRO: ID nao encontrado");
-		hmErro.put("et3", "ERRO: ';' não encontrado");
-		hmErro.put("et4", "ERRO: não encontrado ID, ou NUM, ou LIT");
-		hmErro.put("et5", "ERRO: '=' não encontrado");
-		hmErro.put("et6", "ERRO: Operador matematico não encontrado (+ - * /)");
-		hmErro.put("et7", "ERRO: Operador ou ID ou NUM não encontrado");
-		hmErro.put("et8", "ERRO: '(' não encontrado");
-		hmErro.put("et9", "ERRO: ')' não encontrado");
-		hmErro.put("et10", "ERRO: 'entao' não encontrado");
-		hmErro.put("et11", "ERRO: operadores (?) não encontrado");
-		hmErro.put("et12", "ERRO: Operadores ou ID ou NUM");
-		hmErro.put("et13", "ERRO: ',' não encontrado");
+		hmErro.put("e1", "lexema inesperado");
+		hmErro.put("e0", "programa não inicializado corretamente (talvez falte inicio)");
+		hmErro.put("et1", "programa não possui varinicio");
+		hmErro.put("et29", "ID nao encontrado");
+		hmErro.put("et3", "';' não encontrado");
+		hmErro.put("et4", "não encontrado ID, ou NUM, ou LIT");
+		hmErro.put("et5", "'<-' não encontrado");
+		hmErro.put("et6", "Operador matematico não encontrado (+ - * /)");
+		hmErro.put("et7", "Operador ou ID ou NUM não encontrado");
+		hmErro.put("et8", "'(' não encontrado");
+		hmErro.put("et9", "')' não encontrado");
+		hmErro.put("et10", "'entao' não encontrado");
+		hmErro.put("et11", "operadores (?) não encontrado");
+		hmErro.put("et12", "Operadores ou ID ou NUM");
+		hmErro.put("et13", "',' não encontrado");
 		
-		hmErro.put("et14", "ERRO: LIT não encontrado");
+		hmErro.put("et14", "LIT não encontrado");
+		hmErro.put("et17", "NUM não encontrado");
+		hmErro.put("et18", "ID não encontrado");
+		
+		hmErro.put("et15", "leitura declarada incorretamente");
+		hmErro.put("et16", "escrita declarada incorretamente");
+		
+		hmErro.put("et19", "TIPO de dado inexistente, use inteiro, literal ou real");
+		hmErro.put("et20", "inteiro declarado incorretamente");
+		hmErro.put("et21", "real declarado incorretamente");
+		hmErro.put("et22", "literal declarado incorretamente");
+		
 		
 		
 		return hmErro;

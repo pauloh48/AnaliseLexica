@@ -170,6 +170,8 @@ public class Parser {
 		GeraToken gt = new GeraToken();
 		Token token = null;
 		String toMessageErro = ""; // Para erro
+		String classe = "";
+		int colErro = 0;
 
         		
 		principal:
@@ -192,7 +194,9 @@ public class Parser {
 		        	operacao:
 					while(colCSV < qtdColCSV) {
 						simboloCSV = coluna[colCSV];
-						String classe = token.getClasse();
+						// verifica se token é null Paulo
+						if(token != null)
+							/*String*/ classe = token.getClasse();
 				////////////////////////////////////////////////////
 						if (isEOF == 2) {
 							classe = "EOF";
@@ -204,7 +208,7 @@ public class Parser {
 							flagPosCol = Poscol;
 							classeToEmpilha = coluna[flagPosCol];
 							
-//							System.out.println(classe);
+							System.out.println(classe);
 
 							//já encontrou a classe (coluna) na tabela, então passa a procurar o estado (linha)
 							colCSV = 0;
@@ -219,15 +223,14 @@ public class Parser {
 										String tLine = coluna2[flagPosCol].substring(1);
 										s.push(classeToEmpilha);
 										s.push(tLine);
-//										System.out.println(classe);
-//										System.out.println(s);
-//										System.out.println(coluna2[flagPosCol]);
+										System.out.println(classe);
+										System.out.println(s);
+										System.out.println(coluna2[flagPosCol]);
 										
 										//verificar se o próximo é fim de arquivo, se for, vai para EOF fazer as reduções e desvios
 										//já está na última coluna e a próxima linha é fim de arquivo
 										if((sc.getCol()+1 >= line.length()) && ((sc.getLin() + 1) > linhas ) ){
 											isEOF = 2;
-//											contLine2 = 0;
 											colCSV=0;
 											Poscol = 0;
 											conteudoCsv.close();
@@ -238,6 +241,7 @@ public class Parser {
 										last = 0;	
 										
 										toMessageErro = classe;
+										colErro += token.getLexema().length();
 									}
 									
 									//REDUÇÃO
@@ -258,7 +262,7 @@ public class Parser {
 											j--;
 										}
 										
-//										System.out.println(s);
+										System.out.println(s);
 										
 										j = Integer.parseInt(tLine);
 										//salva o topo da pilha para procurar o desvio (num)
@@ -279,7 +283,6 @@ public class Parser {
 													//encontrou a coluna (classe)
 													flagPosCol = Poscol;													
 													//já encontrou a classe (coluna) na tabela, então passa a procurar o estado (linha)
-//													contLine2++;
 													colCSV = 0;
 													while(true) {
 														linhaCSV = conteudoCsv.readLine();
@@ -287,7 +290,7 @@ public class Parser {
 														if( tmp.equals(coluna2[0]) ){
 															//empilha o desvio
 															s.push(coluna2[flagPosCol]);
-//															System.out.println(s);
+															System.out.println(s);
 															colCSV=0;
 															Poscol = 0;
 															conteudoCsv.close();
@@ -301,30 +304,35 @@ public class Parser {
 											}
 											colCSV=0;
 											Poscol = 0;
+											colErro += token.getLexema().length();
 										}
-//										System.out.println(s);
+										System.out.println(s);
 									}
 									//ACEITAÇÃO
 									if(coluna2[flagPosCol].contains("acc")) {
 										System.out.println("ACC");
+										colErro += token.getLexema().length();
 										break principal;
 									}
 									// ERRO
 									if(coluna2[flagPosCol].contains("e")) {
-										//System.out.println(flagPosCol);
-										//System.out.println(coluna2[flagPosCol]);
-										//System.out.println(classe);
+										System.out.println(flagPosCol);
+										System.out.println(coluna2[flagPosCol]);
+										System.out.println(classe);
 										//verifica se na tabela de erros do hash tem o erro
 										String aaaa = coluna2[flagPosCol];
+										// erros para identificar erro e causa
 										String[] erros = aaaa.split("/");
 										
 										//if(hmErro.containsKey(coluna2[flagPosCol])){
 										if(hmErro.containsKey(erros[0])) {
 											// imprime o valor do erro
 											// erro 1
-											System.out.println(hmErro.get(erros[0]));
-											//erro 2
-											System.out.println(hmErro.get(erros[1]) + ": " 
+											System.out.println("ERRO: 1. " + hmErro.get(erros[0]) 
+													+ " - linha: " + sc.getLin() + ", coluna: " + colErro);
+											//erro + caso 2
+											if(erros.length > 1)
+												System.out.println("      2. " + hmErro.get(erros[1]) + ": " 
 													+ token.getClasse() + ", " + token.getLexema() 
 													+ " no " + toMessageErro);
 										}
@@ -345,7 +353,9 @@ public class Parser {
 				conteudoCsv.close();
 				conteudoCsv = new BufferedReader(new FileReader(filenameCSV));
 			    delimiter = ",";
+			    //colErro = line.length();
 			}
+			colErro = 0;
 			gt.setPos(0); //volta pos coluna para inicio, 0
 			sc.incrementaLin();
 			sc.setCol(0);
