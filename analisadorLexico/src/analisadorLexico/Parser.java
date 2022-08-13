@@ -169,6 +169,7 @@ public class Parser {
 		// Lexico
 		GeraToken gt = new GeraToken();
 		Token token = null;
+		String toMessageErro = ""; // Para erro
 
         		
 		principal:
@@ -235,6 +236,8 @@ public class Parser {
 										}
 										//para pegar próximo token
 										last = 0;	
+										
+										toMessageErro = classe;
 									}
 									
 									//REDUÇÃO
@@ -312,12 +315,21 @@ public class Parser {
 										//System.out.println(coluna2[flagPosCol]);
 										//System.out.println(classe);
 										//verifica se na tabela de erros do hash tem o erro
-										if(hmErro.containsKey(coluna2[flagPosCol])){
+										String aaaa = coluna2[flagPosCol];
+										String[] erros = aaaa.split("/");
+										
+										//if(hmErro.containsKey(coluna2[flagPosCol])){
+										if(hmErro.containsKey(erros[0])) {
 											// imprime o valor do erro
-											System.out.println(hmErro.get(coluna2[flagPosCol]));
+											// erro 1
+											System.out.println(hmErro.get(erros[0]));
+											//erro 2
+											System.out.println(hmErro.get(erros[1]) + ": " 
+													+ token.getClasse() + ", " + token.getLexema() 
+													+ " no " + toMessageErro);
 										}
 										last = 0;
-										//break principal;
+										break principal;
 									}
 									break interno;
 								}

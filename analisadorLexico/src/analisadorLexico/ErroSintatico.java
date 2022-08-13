@@ -31,7 +31,7 @@ public class ErroSintatico {
 		//e1 : lexema inesperado
 		//e2 : lexema fora do escopo
 		hmErro.put("e1", "ERRO: lexema inesperado");
-		hmErro.put("et0", "ERRO: programa não inicializado corretamente (talvez falte inicio)");
+		hmErro.put("e0", "ERRO: programa não inicializado corretamente (talvez falte inicio)");
 		hmErro.put("et1", "ERRO: programa não possui varinicio");
 		hmErro.put("et29", "ERRO: ID nao encontrado");
 		hmErro.put("et3", "ERRO: ';' não encontrado");

@@ -1,5 +1,7 @@
 inicio
+aa
 varinicio
+
 literal A;
 inteiro B;
 inteiro D;
