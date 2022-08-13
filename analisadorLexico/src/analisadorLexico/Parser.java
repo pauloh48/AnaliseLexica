@@ -169,7 +169,6 @@ public class Parser {
 		// Lexico
 		GeraToken gt = new GeraToken();
 		Token token = null;
-		String toMessageErro = ""; // Para erro
 		String classe = "";
 		int colErro = 0;
 
@@ -240,7 +239,6 @@ public class Parser {
 										//para pegar próximo token
 										last = 0;	
 										
-										toMessageErro = classe;
 										colErro += token.getLexema().length();
 									}
 									
@@ -328,13 +326,12 @@ public class Parser {
 										if(hmErro.containsKey(erros[0])) {
 											// imprime o valor do erro
 											// erro 1
-											System.out.println("ERRO: 1. " + hmErro.get(erros[0]) 
-													+ " - linha: " + sc.getLin() + ", coluna: " + colErro);
+											System.out.println("ERRO: 1. " + hmErro.get(erros[0]) + ": " 
+													+ token.getClasse() + ", " + token.getLexema() 
+													+  " - linha: " + sc.getLin() + ", coluna: " + colErro);
 											//erro + caso 2
 											if(erros.length > 1)
-												System.out.println("      2. " + hmErro.get(erros[1]) + ": " 
-													+ token.getClasse() + ", " + token.getLexema() 
-													+ " no " + toMessageErro);
+												System.out.println("      2. " + hmErro.get(erros[1]));
 										}
 										last = 0;
 										break principal;
