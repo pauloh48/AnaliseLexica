@@ -57,6 +57,8 @@ public class ErroSintatico {
 		hmErro.put("et20", "inteiro declarado incorretamente");
 		hmErro.put("et21", "real declarado incorretamente");
 		hmErro.put("et22", "literal declarado incorretamente");
+		hmErro.put("et23", "aguarda virgula ou identificador");
+		
 		
 		
 		

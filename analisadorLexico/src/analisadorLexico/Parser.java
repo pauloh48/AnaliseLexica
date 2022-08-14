@@ -207,7 +207,7 @@ public class Parser {
 							flagPosCol = Poscol;
 							classeToEmpilha = coluna[flagPosCol];
 							
-							System.out.println(classe);
+//							System.out.println(classe);
 
 							//já encontrou a classe (coluna) na tabela, então passa a procurar o estado (linha)
 							colCSV = 0;
@@ -222,9 +222,9 @@ public class Parser {
 										String tLine = coluna2[flagPosCol].substring(1);
 										s.push(classeToEmpilha);
 										s.push(tLine);
-										System.out.println(classe);
-										System.out.println(s);
-										System.out.println(coluna2[flagPosCol]);
+//										System.out.println(classe);
+//										System.out.println(s);
+//										System.out.println(coluna2[flagPosCol]);
 										
 										//verificar se o próximo é fim de arquivo, se for, vai para EOF fazer as reduções e desvios
 										//já está na última coluna e a próxima linha é fim de arquivo
@@ -260,7 +260,7 @@ public class Parser {
 											j--;
 										}
 										
-										System.out.println(s);
+//										System.out.println(s);
 										
 										j = Integer.parseInt(tLine);
 										//salva o topo da pilha para procurar o desvio (num)
@@ -288,7 +288,7 @@ public class Parser {
 														if( tmp.equals(coluna2[0]) ){
 															//empilha o desvio
 															s.push(coluna2[flagPosCol]);
-															System.out.println(s);
+//															System.out.println(s);
 															colCSV=0;
 															Poscol = 0;
 															conteudoCsv.close();
@@ -304,7 +304,7 @@ public class Parser {
 											Poscol = 0;
 											colErro += token.getLexema().length();
 										}
-										System.out.println(s);
+//										System.out.println(s);
 									}
 									//ACEITAÇÃO
 									if(coluna2[flagPosCol].contains("acc")) {
@@ -314,9 +314,9 @@ public class Parser {
 									}
 									// ERRO
 									if(coluna2[flagPosCol].contains("e")) {
-										System.out.println(flagPosCol);
-										System.out.println(coluna2[flagPosCol]);
-										System.out.println(classe);
+//										System.out.println(flagPosCol);
+//										System.out.println(coluna2[flagPosCol]);
+//										System.out.println(classe);
 										//verifica se na tabela de erros do hash tem o erro
 										String aaaa = coluna2[flagPosCol];
 										// erros para identificar erro e causa
@@ -326,7 +326,7 @@ public class Parser {
 										if(hmErro.containsKey(erros[0])) {
 											// imprime o valor do erro
 											// erro 1
-											System.out.println("ERRO: 1. " + hmErro.get(erros[0]) + ": " 
+											System.out.println("\tERRO: 1. " + hmErro.get(erros[0]) + " - " 
 													+ token.getClasse() + ", " + token.getLexema() 
 													+  " - linha: " + sc.getLin() + ", coluna: " + colErro);
 											//erro + caso 2
@@ -334,7 +334,7 @@ public class Parser {
 												System.out.println("      2. " + hmErro.get(erros[1]));
 										}
 										last = 0;
-										break principal;
+//										break principal;
 									}
 									break interno;
 								}
